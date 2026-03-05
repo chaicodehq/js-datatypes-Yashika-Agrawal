@@ -29,6 +29,22 @@
  *   fixBollywoodTitle("dil ka kya kare")
  *   // => "Dil ka Kya Kare"
  */
-export function fixBollywoodTitle(title) {
-  // Your code here
+export function fixBollywoodTitle(str) {
+  if(typeof str!="string")
+    {
+      return "";
+    }
+  let lower=str.toLowerCase();
+  let exception=["ka", "ki", "ke", "se", "aur", "ya", "the", "of", "in", "a", "an"];
+  let trimmed= lower.trim().split(" "); //removed empty space start and end. result will be array of empty spaces
+  let b= trimmed.filter(a=>a!="").map((item,index)=>{
+    if(exception.includes(item) && index!=0) 
+    {
+      return item.toLowerCase();
+    }
+    else {
+      return item.charAt(0).toUpperCase() + item.substring(1);
+    }
+  });
+  return b.join(" ");
 }
