@@ -47,5 +47,57 @@
  *   //      frequentContact: "Swiggy", allAbove100: false, hasLargeTransaction: true }
  */
 export function analyzeUPITransactions(transactions) {
-  // Your code here
+  let totalCredit=0, totalDebit=0, categoryBreakdown={},maxi=0
+  if(!Array.isArray(transactions) || transactions.length==0) return null;
+  let filtered= transactions.filter(({type,amount})=>amount>0 && (type=="credit" || type=="debit"))
+  if(!filtered || Object.keys(filtered).length==0) return null;
+  console.log(filtered)
+  let allAbove100=filtered.every(({amount})=>amount>100)
+  let hasLargeTransaction=filtered.some(({amount})=>amount>=5000)
+  let count=filtered.length
+  let highestTransaction={}
+  let freq=filtered.reduce((acc,{to})=>{
+  if(acc[to])
+  { acc[to]+=1
+  } else{ acc[to]=1}
+  return acc;
+  }, {})
+  let max=0, frequentContact=""
+  for(let key in freq)
+    {
+      if(freq[key]>max)
+        {
+          max=freq[key]
+          frequentContact=key
+        }
+    }
+
+  for(let item of filtered)
+    {
+      let category=item.category
+      let amount=item.amount
+      if(categoryBreakdown[category])
+        {
+          categoryBreakdown[category]+=amount
+        }
+      else{
+        categoryBreakdown[category]=amount
+      }
+      if(item.amount>maxi)
+        {
+          maxi=item.amount}
+      if(item.type=="credit")
+        {
+          totalCredit=totalCredit+item.amount
+        }
+      else if(item.type=="debit")
+        {
+          totalDebit=totalDebit+item.amount
+        }
+    }
+  let netBalance=totalCredit-totalDebit;
+  let avgTransaction=Math.round((totalCredit+totalDebit)/count);
+  console.log(maxi)
+  highestTransaction=filtered.find(({amount})=>amount==maxi)
+  return{totalCredit, totalDebit, netBalance, transactionCount:count,avgTransaction,highestTransaction, categoryBreakdown, frequentContact, allAbove100, hasLargeTransaction}
 }

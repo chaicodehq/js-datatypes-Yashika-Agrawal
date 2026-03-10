@@ -62,5 +62,64 @@
  *   // => { isValid: false, errors: { name: "...", email: "...", ... } }
  */
 export function validateForm(formData) {
-  // Your code here
+  let errors={}
+  let isValid=false
+  let {name, email,phone,age,pincode, state, agreeTerms}= formData
+  let validNum=["6", "7", "8", "9"], isValidNum=false
+  if(typeof name!=="string" || name.trim()=="" || name.length<2 || name.length>50)
+    {
+      errors.name= "Name must be 2-50 characters"
+    }
+    const atIndex = email.indexOf("@")
+    const lastAtIndex = email.lastIndexOf("@")
+    
+    if (
+      typeof email !== "string" ||
+      atIndex === -1 ||
+      atIndex !== lastAtIndex ||
+      !email.slice(atIndex + 1).includes(".")
+    ) {
+      errors.email = "Invalid email format"
+    }
+  for(let valid of validNum)
+    {
+      if(phone.startsWith(valid))
+        {
+          isValidNum=true
+        }
+    }
+  if(!phone || phone.length==0 || Number.isNaN(Number(phone)) || phone.length!==10 || !isValidNum)
+    {
+      errors.phone="Invalid Indian phone number"
+    }
+    if (typeof age === "string") {
+      age = parseInt(age)
+    }
+    
+    if (
+      Number.isNaN(age) ||
+      !Number.isInteger(age) ||
+      age < 16 ||
+      age > 100
+    ) {
+      errors.age = "Age must be an integer between 16 and 100"
+    }
+    if(!pincode || pincode.length!==6 || pincode.startsWith("0") || Number.isNaN(Number(pincode)))
+      {
+        errors.pincode="Invalid Indian pincode"
+      }
+  state= state ?? ""
+  if(state.trim()=="")
+    {
+      errors.state="State is required"
+    }
+  if(!agreeTerms)
+    {
+      errors.agreeTerms="Must agree to terms"
+    }
+  if(Object.keys(errors).length==0)
+    {
+      isValid=true
+    }
+  return{errors, isValid}
 }
